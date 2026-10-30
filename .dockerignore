@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log*
+.git
+.gitignore
+.env
+auth_info
+downloads
+docs
+diagrams
+*.postman_collection.json
+*.postman_environment.json
+

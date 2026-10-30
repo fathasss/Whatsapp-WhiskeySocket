@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Environment variables (keep .env.example)
+.env
+.env.*
+!.env.example
+
+# WhatsApp runtime session credentials & media
+auth_info/
+downloads/
+
+# Postman files (local only)
+*.postman_collection.json
+*.postman_environment.json
+
+# Logs & OS files
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+

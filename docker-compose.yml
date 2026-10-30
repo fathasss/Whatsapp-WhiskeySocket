@@ -1,0 +1,46 @@
+services:
+  mongo:
+    image: mongo:6
+    container_name: whatsapp-whiskeysocket-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - whatsapp_mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  whatsapp-whiskeysocket:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: whatsapp-whiskeysocket:latest
+    container_name: whatsapp-whiskeysocket
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+      - MONGO_URI=mongodb://mongo:27017/whatsapp_whiskeysocket
+    ports:
+      - "${PORT:-3002}:3002"
+    volumes:
+      - ./auth_info:/usr/src/app/auth_info
+      - ./downloads:/usr/src/app/downloads
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3002/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  whatsapp_mongo_data:
